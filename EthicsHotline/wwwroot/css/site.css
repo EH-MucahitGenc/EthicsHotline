@@ -1,0 +1,166 @@
+:root {
+    --brand: #1593d4;
+    --brand-600: #117fb5;
+    --success: #16a34a;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --surface: #ffffff;
+    --ring: rgba(21,147,212,.18);
+}
+
+html, body {
+    height: 100%;
+}
+
+    body.bg-body {
+        background: radial-gradient(1000px 500px at 10% -10%, rgba(21,147,212,.06), transparent 50%), radial-gradient(800px 400px at 90% 0%, rgba(22,163,74,.06), transparent 50%), #f7f9fc;
+        color: var(--ink);
+    }
+
+/* Sticky marka header */
+.brand-header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: rgba(255,255,255,.88);
+    backdrop-filter: saturate(180%) blur(10px);
+    border-bottom: 1px solid rgba(2,6,23,.06);
+}
+
+.brand-logo {
+    height: 44px;
+}
+
+.subtle-badge {
+    border: 1px solid rgba(2,6,23,.06);
+}
+
+.brandbar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand), #3fb2ea 40%, #9ed7f7 100%);
+}
+
+/* Hero */
+.app-hero {
+    padding: 48px 16px 28px;
+    background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.9)), radial-gradient(600px 250px at 20% 0%, rgba(21,147,212,.12), transparent 60%), radial-gradient(600px 250px at 80% 0%, rgba(22,163,74,.12), transparent 60%);
+    border-bottom: 1px solid rgba(2,6,23,.06);
+}
+
+    .app-hero h1 {
+        font-weight: 700;
+        letter-spacing: .2px;
+    }
+
+    .app-hero p {
+        color: var(--muted);
+    }
+
+/* Card */
+.card-elegant {
+    background: var(--surface);
+    border: 1px solid rgba(2,6,23,.06);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(2,6,23,.06);
+}
+
+    .card-elegant .card-header {
+        background: linear-gradient(180deg, rgba(21,147,212,.07), rgba(21,147,212,.03));
+        border-bottom: 1px solid rgba(2,6,23,.06);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+.section-title {
+    font-weight: 600;
+    margin: 4px 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .section-title .bi {
+        color: var(--brand-600);
+    }
+
+/* Inputs & buttons */
+.form-label {
+    font-weight: 600;
+}
+
+.form-control, .form-select {
+    border-radius: 12px;
+}
+
+.input-group-text {
+    border-radius: 12px 0 0 12px;
+    background: #f1f5f9;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 .25rem var(--ring);
+}
+
+.btn {
+    border-radius: 12px;
+    padding: .625rem 1rem;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--brand);
+    --bs-btn-border-color: var(--brand);
+    --bs-btn-hover-bg: var(--brand-600);
+    --bs-btn-hover-border-color: var(--brand-600);
+}
+
+.btn-success {
+    --bs-btn-bg: var(--success);
+    --bs-btn-border-color: var(--success);
+}
+
+/* Modal */
+.modal-content {
+    border-radius: 16px;
+    border: 1px solid rgba(2,6,23,.06);
+    box-shadow: 0 10px 40px rgba(2,6,23,.16);
+}
+
+/* === OTP inline düzeni === */
+/* toast’lar biraz daha okunaklý */
+.toast .toast-body {
+    font-size: .95rem;
+}
+
+/* === OTP inline düzeni === */
+.otp-inline {
+    background: #fbfdff;
+}
+
+    .otp-inline .form-control { 
+        min-width: 220px;
+    }
+
+    .otp-inline .otp-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: .25rem .5rem;
+        border-radius: 999px;
+        font-size: .875rem;
+        background: #f1f5f9;
+        border: 1px solid rgba(2,6,23,.06);
+    }
+
+.otp-chip.ok {
+    background: #e8f6ee;
+    border-color: #ccebd9;
+    color: #137b36;
+}
+
+.otp-chip.sent {
+    background: #ecf5fd;
+    border-color: #cfe8fb;
+    color: #0b65a4;
+}
+
