@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EthicsHotline")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bc2dfaabbe9c08915fab484ceae3f6f7e32ad7f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e00f88252b67748d5bb63346863c7e8228cb4e1")]
 [assembly: System.Reflection.AssemblyProductAttribute("EthicsHotline")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EthicsHotline")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

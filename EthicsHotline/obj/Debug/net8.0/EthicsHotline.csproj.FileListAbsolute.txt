@@ -370,3 +370,4 @@ C:\ErkurtProjeler\EthicsHotline\EthicsHotline\EthicsHotline\obj\Debug\net8.0\ref
 C:\ErkurtProjeler\EthicsHotline\EthicsHotline\EthicsHotline\obj\Debug\net8.0\EthicsHotline.pdb
 C:\ErkurtProjeler\EthicsHotline\EthicsHotline\EthicsHotline\obj\Debug\net8.0\EthicsHotline.genruntimeconfig.cache
 C:\ErkurtProjeler\EthicsHotline\EthicsHotline\EthicsHotline\obj\Debug\net8.0\ref\EthicsHotline.dll
+C:\ErkurtProjeler\EthicsHotline\EthicsHotline\EthicsHotline\obj\Debug\net8.0\EthicsHotline.sourcelink.json
