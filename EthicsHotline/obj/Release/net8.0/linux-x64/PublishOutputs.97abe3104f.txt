@@ -1,0 +1,4 @@
+C:\ErkurtProjeler\EthicsHotline\publish\appsettings.Development.json
+C:\ErkurtProjeler\EthicsHotline\publish\appsettings.json
+C:\ErkurtProjeler\EthicsHotline\publish\EthicsHotline.pdb
+C:\ErkurtProjeler\EthicsHotline\publish\EthicsHotline
