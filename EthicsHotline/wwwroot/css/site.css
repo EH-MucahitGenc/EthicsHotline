@@ -13,50 +13,92 @@ html, body {
 }
 
     body.bg-body {
-        background: radial-gradient(1000px 500px at 10% -10%, rgba(21,147,212,.06), transparent 50%), radial-gradient(800px 400px at 90% 0%, rgba(22,163,74,.06), transparent 50%), #f7f9fc;
+        /* arka plan – form ile yumuþak geçiþ */
+        background: radial-gradient(1200px 520px at 12% -12%, rgba(21,147,212,.06), transparent 55%), radial-gradient(900px 420px at 88% -8%, rgba(22,163,74,.05), transparent 55%), #f7f9fc;
         color: var(--ink);
     }
 
-/* Sticky marka header */
+/* ========= Zengin Brand Header ========= */
 .brand-header {
     position: sticky;
     top: 0;
     z-index: 1030;
-    background: rgba(255,255,255,.88);
-    backdrop-filter: saturate(180%) blur(10px);
-    border-bottom: 1px solid rgba(2,6,23,.06);
+    background: transparent;
+    border: 0;
 }
 
-.brand-logo {
-    height: 44px;
-}
+    /* brandbar'ý sabitlemek için referans */
+    .brand-header .container {
+        position: relative;
+    }
 
-.subtle-badge {
+/* üst blok: min-height yok; logo büyüyünce çizgi kaçmasýn diye alt padding küçük */
+.brand-top {
+    min-height: 0;
+    padding: 8px 0 6px;
+    background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.96)), radial-gradient(700px 220px at 10% 0%, rgba(21,147,212,.10), transparent 65%);
+    backdrop-filter: blur(8px);
     border: 1px solid rgba(2,6,23,.06);
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 6px 20px rgba(2,6,23,.06);
 }
 
+/* logo büyük ve net (istediðin gibi 150px) */
+.brand-logo-lg {
+    height: 150px;
+    width: auto;
+    object-fit: contain;
+    transition: transform .15s ease-in-out;
+}
+
+    .brand-logo-lg:hover {
+        transform: scale(1.03);
+    }
+
+.brand-titles .brand-title {
+    font-weight: 700;
+    letter-spacing: .2px;
+}
+
+    .brand-titles .brand-title .bi {
+        color: var(--brand-600);
+    }
+
+.brand-subtitle {
+    margin-top: 2px;
+}
+
+/* Saðdaki küçük “güven” rozeti */
+.pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: .95rem;
+    background: #fff;
+    border: 1px solid rgba(2,6,23,.08);
+    box-shadow: 0 1px 2px rgba(2,6,23,.05);
+    color: var(--ink);
+}
+
+/* Brandbar: her zaman baþlýðýn dibinde kalsýn */
 .brandbar {
-    height: 3px;
-    background: linear-gradient(90deg, var(--brand), #3fb2ea 40%, #9ed7f7 100%);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px; /* -1px sýnýrý kapatýr */
+    height: 4px;
+    background: linear-gradient(90deg, var(--brand), #28a5e5 40%, #8ed8f9 100%);
+    border-radius: 0 0 14px 14px;
+    border: 1px solid rgba(2,6,23,.06);
+    border-top: 0;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.04);
 }
 
-/* Hero */
-.app-hero {
-    padding: 48px 16px 28px;
-    background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.9)), radial-gradient(600px 250px at 20% 0%, rgba(21,147,212,.12), transparent 60%), radial-gradient(600px 250px at 80% 0%, rgba(22,163,74,.12), transparent 60%);
-    border-bottom: 1px solid rgba(2,6,23,.06);
-}
-
-    .app-hero h1 {
-        font-weight: 700;
-        letter-spacing: .2px;
-    }
-
-    .app-hero p {
-        color: var(--muted);
-    }
-
-/* Card */
+/* ---------- Genel UI ---------- */
 .card-elegant {
     background: var(--surface);
     border: 1px solid rgba(2,6,23,.06);
@@ -83,7 +125,6 @@ html, body {
         color: var(--brand-600);
     }
 
-/* Inputs & buttons */
 .form-label {
     font-weight: 600;
 }
@@ -119,25 +160,22 @@ html, body {
     --bs-btn-border-color: var(--success);
 }
 
-/* Modal */
 .modal-content {
     border-radius: 16px;
     border: 1px solid rgba(2,6,23,.06);
     box-shadow: 0 10px 40px rgba(2,6,23,.16);
 }
 
-/* === OTP inline düzeni === */
-/* toast’lar biraz daha okunaklý */
+/* OTP / toast */
 .toast .toast-body {
     font-size: .95rem;
 }
 
-/* === OTP inline düzeni === */
 .otp-inline {
     background: #fbfdff;
 }
 
-    .otp-inline .form-control { 
+    .otp-inline .form-control {
         min-width: 220px;
     }
 
@@ -164,3 +202,18 @@ html, body {
     color: #0b65a4;
 }
 
+/* Mobil ince ayar */
+@media (max-width: 576px) {
+    .brand-top {
+        padding: 8px 12px 6px;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .brand-logo-lg {
+        height: 96px;
+    }
+
+    .brandbar {
+        border-radius: 0 0 12px 12px;
+    }
+}

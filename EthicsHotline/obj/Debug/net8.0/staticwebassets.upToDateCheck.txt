@@ -1,7 +1,12 @@
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\img\erkurt-logo.png
+wwwroot\js\api.js
+wwwroot\js\otp-modal.js
+wwwroot\js\page-index.js
 wwwroot\js\site.js
+wwwroot\js\toast.js
+wwwroot\js\validators.js
 wwwroot\kvkk.html
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map

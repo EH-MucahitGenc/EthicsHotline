@@ -1,16 +1,8 @@
 ﻿@page
 @model EthicsHotline.Pages.IndexModel
 @{
-    ViewData["Title"] = "Etik Hat Bildirim Formu";
+    ViewData["Title"] = "Erkurt Holding Etik Hat Bildirim Formu";
 }
-
-<!-- Hero -->
-<section class="app-hero text-center">
-    <div class="container" style="max-width:980px;">
-        <h1 class="display-6 mb-2">Erkurt Holding | Etik Hat</h1>
-        <p class="mb-0">Lütfen formu eksiksiz doldurun. Gönderimden önce KVKK aydınlatmasını onaylamanız gerekir.</p>
-    </div>
-</section>
 
 <!-- Form Card -->
 <div class="container my-4" style="max-width:980px;">
@@ -28,8 +20,9 @@
                     <div class="section-title"><i class="bi bi-clipboard2"></i> Olay Bilgileri</div>
                 </div>
 
+                <!-- Kategori (zorunlu) -->
                 <div class="col-md-6">
-                    <label class="form-label">Kategori</label>
+                    <label class="form-label">Kategori <span class="text-danger">*</span></label>
                     <select id="category" class="form-select">
                         <option value="">-- Seçiniz --</option>
                         <option value="Bribery">Rüşvet/Usulsüzlük</option>
@@ -37,6 +30,7 @@
                         <option value="HSE">Güvenlik/İş Sağlığı</option>
                         <option value="Other">Diğer</option>
                     </select>
+                    <div id="categoryErr" class="invalid-feedback">Lütfen bir kategori seçin.</div>
                     <div class="form-text">Olayı en iyi tanımlayan kategoriyi seçin.</div>
                 </div>
 
@@ -64,9 +58,11 @@
                     </div>
                 </div>
 
+                <!-- Detay (zorunlu) -->
                 <div class="col-12">
-                    <label class="form-label">Detay</label>
+                    <label class="form-label">Detay <span class="text-danger">*</span></label>
                     <textarea id="details" class="form-control" rows="6" placeholder="Olayı mümkün olduğunca detaylı anlatın..."></textarea>
+                    <div id="detailsErr" class="invalid-feedback">Detay alanı zorunludur.</div>
                     <div class="form-text">Şahıs isimleri, tarih/saat, görgü tanıkları vb. faydalıdır.</div>
                 </div>
 
@@ -74,67 +70,6 @@
                     <label class="form-label">İlgili Kişiler (opsiyonel)</label>
                     <input id="people" class="form-control" placeholder="Örn: A.B., C.D." />
                 </div>
-
-                <!-- === OTP BLOKU (tek satır, moda göre değişir) === -->
-                <div class="col-12 mt-2">
-                    <div class="section-title"><i class="bi bi-phone"></i> SMS Doğrulama</div>
-
-                    <div id="otpBlock" class="otp-inline border rounded-3 p-3">
-                        <div class="row g-2 align-items-center">
-                            <!-- +90 + telefon -->
-                            <div class="col-auto">
-                                <div class="input-group">
-                                    <span class="input-group-text">+90</span>
-                                    <input id="phoneDigits"
-                                           class="form-control"
-                                           type="text"
-                                           placeholder="5xxxxxxxxx"
-                                           maxlength="10"
-                                           inputmode="numeric"
-                                           pattern="^5\\d{9}$"
-                                           onkeypress="return onlyDigitKeypress(event)"
-                                           onpaste="handleDigitPaste(event)"
-                                           oninput="forceDigits(this)" />
-                                </div>
-                            </div>
-
-                            <!-- telefon modunda görünen -->
-                            <div class="col-auto otp-phone-actions">
-                                <button id="sendBtn" class="btn btn-primary">
-                                    <i class="bi bi-send"></i> Kodu Gönder
-                                </button>
-                            </div>
-
-                            <!-- kod modunda görünen -->
-                            <div class="col-auto otp-code-actions d-none">
-                                <div class="input-group">
-                                    <input id="otp" class="form-control" maxlength="6" placeholder="XXXXXX" />
-                                    <button id="verifyBtn" class="btn btn-outline-secondary">
-                                        <i class="bi bi-shield-lock"></i> Doğrula
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="col-auto otp-code-actions d-none">
-                                <button id="resendBtn" class="btn btn-link px-2" disabled>Tekrar Gönder (30)</button>
-                            </div>
-
-                            <div class="col-auto otp-code-actions d-none">
-                                <button type="button" class="btn btn-link px-2 text-muted" onclick="backToPhoneMode()">
-                                    Telefonu değiştir
-                                </button>
-                            </div>
-
-                            <!-- durum etiketi -->
-                            <div class="col-auto ms-auto">
-                                <span id="otpInfo" class="otp-chip text-muted">—</span>
-                            </div>
-                        </div>
-
-                        <div class="form-text mt-2">Sadece mobil numara: 5 ile başlayan 10 hane.</div>
-                    </div>
-                </div>
-                <!-- === /OTP BLOKU === -->
 
                 <div class="col-12">
                     <div class="form-check mt-2">
@@ -209,150 +144,64 @@
     </div>
 </div>
 
+<!-- OTP Modal (akış sadece burada) -->
+<div class="modal fade" id="otpModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-phone me-2"></i>SMS Doğrulama</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- TELEFON -->
+                <div id="mPhoneRow" class="mb-2">
+                    <label class="form-label">Telefon</label>
+                    <div class="input-group">
+                        <span class="input-group-text">+90</span>
+                        <input id="mPhone" class="form-control" placeholder="5xxxxxxxxx" maxlength="10" inputmode="numeric" />
+                    </div>
+                    <div id="mPhoneHelp" class="form-text">Sadece mobil numara: 5 ile başlayan 10 hane.</div>
+                    <div id="mPhoneErr" class="text-danger small d-none mt-1">Telefon: 5 ile başlayan 10 hane giriniz.</div>
+                    <div class="mt-2">
+                        <button id="mSendBtn" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Kodu Gönder
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KOD (başta gizli) -->
+                <div id="mCodeRow" class="mb-2 d-none">
+                    <label class="form-label">Kod</label>
+                    <div class="input-group">
+                        <input id="mCode" class="form-control" maxlength="6" placeholder="XXXXXX" inputmode="numeric" />
+                        <button id="mVerifyBtn" class="btn btn-outline-secondary">
+                            <i class="bi bi-shield-lock"></i> Doğrula
+                        </button>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mt-2">
+                        <button id="mResendBtn" class="btn btn-link px-2" disabled>Tekrar Gönder (30)</button>
+                        <button id="mChangePhone" class="btn btn-link px-2 text-muted">Telefonu değiştir</button>
+                    </div>
+                    <div id="mInfo" class="form-text">Kod gönderildi. Lütfen giriniz.</div>
+                </div>
+
+                <div id="mErr" class="text-danger small mt-2 d-none">Hata oluştu.</div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="mCancel" type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button id="mConfirmSend" type="button" class="btn btn-success" disabled>
+                    <i class="bi bi-check2-circle"></i> Bildirimi Gönder
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-    <script>
-        // === Feature flag (UI) ===
-        let REQUIRE_OTP = true;
-        (async function initFeatures(){
-          try{
-            const r = await fetch('/features'); if (r.ok){ const f = await r.json(); REQUIRE_OTP = !!f.requireOtp; }
-          } catch {}
-          finally { document.getElementById('submitBtn').disabled = REQUIRE_OTP ? true : false; }
-        })();
-
-        let cooldown = 30, timer=null, otpVerified = false;
-
-        // ---- Telefon: sadece rakam ----
-        function forceDigits(el){ el.value = el.value.replace(/\D/g, '').slice(0,10); }
-        function onlyDigitKeypress(e){ if (e.key && e.key.length===1 && !/[0-9]/.test(e.key)) { e.preventDefault(); return false; } return true; }
-        function handleDigitPaste(e){
-          e.preventDefault();
-          const txt = (e.clipboardData||window.clipboardData).getData('text');
-          const clean = (txt||'').replace(/\D/g,'').slice(0,10);
-          const el=e.target, s=el.selectionStart, t=el.selectionEnd;
-          el.value=(el.value.slice(0,s)+clean+el.value.slice(t)).slice(0,10);
-        }
-        function getPhoneE164(){ const d=document.getElementById('phoneDigits').value.trim(); return d.length===10?`+90${d}`:""; }
-        function isValidTrMobile(){ return /^5\d{9}$/.test(document.getElementById('phoneDigits').value.trim()); }
-
-        // ---- UI helpers: toast & modal ----
-        function showToast(message, variant='primary') {
-          const wrap = document.getElementById('toastWrap');
-          const div = document.createElement('div');
-          div.className = `toast align-items-center text-bg-${variant} border-0`;
-          div.role = 'alert'; div.ariaLive = 'assertive'; div.ariaAtomic = 'true';
-          div.innerHTML = `
-            <div class="d-flex">
-              <div class="toast-body">${message}</div>
-              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
-            </div>`;
-          wrap.appendChild(div);
-          const t = new bootstrap.Toast(div, { delay: 3000 });
-          t.show();
-          div.addEventListener('hidden.bs.toast', () => div.remove());
-        }
-        function showErrorModal(message, title='Hata') {
-          document.getElementById('appModalTitle').textContent = title;
-          document.getElementById('appModalBody').textContent = message;
-          new bootstrap.Modal(document.getElementById('appModal')).show();
-        }
-
-        // ---- yardımcılar ----
-        async function post(url, payload){
-          const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-          const data = await res.json(); if(!res.ok) throw new Error(data.message||'Hata'); return data;
-        }
-        function startCooldown(){
-          const btn=document.getElementById('resendBtn'); btn.disabled=true; let left=cooldown; btn.textContent=`Tekrar Gönder (${left})`;
-          timer=setInterval(()=>{ left--; btn.textContent=`Tekrar Gönder (${left})`; if(left<=0){ clearInterval(timer); btn.disabled=false; btn.textContent='Tekrar Gönder'; }},1000);
-        }
-
-        // ==== MODE SWITCH ====
-        function showCodeMode(){
-          document.querySelectorAll('.otp-phone-actions').forEach(el=>el.classList.add('d-none'));
-          document.querySelectorAll('.otp-code-actions').forEach(el=>el.classList.remove('d-none'));
-          const chip=document.getElementById('otpInfo'); chip.textContent='Kod gönderildi'; chip.classList.remove('ok'); chip.classList.add('sent');
-          setTimeout(()=>document.getElementById('otp')?.focus(),50);
-        }
-        function backToPhoneMode(){
-          document.querySelectorAll('.otp-phone-actions').forEach(el=>el.classList.remove('d-none'));
-          document.querySelectorAll('.otp-code-actions').forEach(el=>el.classList.add('d-none'));
-          document.getElementById('otp').value='';
-          const chip=document.getElementById('otpInfo'); chip.textContent='—'; chip.classList.remove('ok','sent');
-          clearInterval(timer); const rb=document.getElementById('resendBtn'); if(rb){ rb.disabled=true; rb.textContent='Tekrar Gönder (30)'; }
-          otpVerified=false; if(REQUIRE_OTP) document.getElementById('submitBtn').disabled=true;
-        }
-
-        // ==== Actions ====
-        document.getElementById('sendBtn').onclick = async ()=>{
-          try{
-            if(!isValidTrMobile()){ showErrorModal('Telefon: 5 ile başlayan 10 hane giriniz.', 'Doğrulama'); return; }
-            await post('/otp/send',{phone:getPhoneE164()}); showCodeMode(); startCooldown(); showToast('Kod gönderildi','primary');
-          }catch(e){ showErrorModal(e.message||'Beklenmeyen bir hata oluştu.'); }
-        };
-
-        document.getElementById('resendBtn').onclick = async ()=>{
-          try{
-            if(!isValidTrMobile()){ showErrorModal('Telefon: 5 ile başlayan 10 hane giriniz.','Doğrulama'); return; }
-            await post('/otp/send',{phone:getPhoneE164()});
-            const chip=document.getElementById('otpInfo'); chip.textContent='Kod tekrar gönderildi'; chip.classList.remove('ok'); chip.classList.add('sent');
-            startCooldown(); showToast('Kod tekrar gönderildi','primary');
-          }catch(e){ showErrorModal(e.message||'Beklenmeyen bir hata oluştu.'); }
-        };
-
-        document.getElementById('verifyBtn').onclick = async ()=>{
-          try{
-            if(!isValidTrMobile()){ showErrorModal('Telefon: 5 ile başlayan 10 hane giriniz.','Doğrulama'); return; }
-            const code=document.getElementById('otp').value.trim(); if(!code){ showErrorModal('Kod gerekli.','Doğrulama'); return; }
-            const ok=await post('/otp/verify',{phone:getPhoneE164(),code});
-            if(ok.success){
-              otpVerified=true;
-              const chip=document.getElementById('otpInfo'); chip.textContent='Doğrulandı'; chip.classList.remove('sent'); chip.classList.add('ok');
-              if(REQUIRE_OTP) document.getElementById('submitBtn').disabled=false;
-              showToast('Doğrulama başarılı','success');
-            }
-          }catch(e){ showErrorModal(e.message||'Beklenmeyen bir hata oluştu.'); }
-        };
-
-        // KVKK modal içinden onay
-        document.getElementById('kvkkApprove')?.addEventListener('click', () => {
-          const kvkk=document.getElementById('kvkk'); if(kvkk) kvkk.checked=true;
-          const modalEl=document.getElementById('kvkkModal'); bootstrap.Modal.getInstance(modalEl)?.hide();
-          showToast('KVKK onayı verildi','success');
-        });
-
-        // Gönder
-        document.getElementById('submitBtn').onclick = async ()=>{
-          try{
-            if(REQUIRE_OTP && !otpVerified){ showErrorModal('Önce telefon doğrulamasını tamamlayın.','Doğrulama'); return; }
-            if(REQUIRE_OTP && !isValidTrMobile()){ showErrorModal('Telefon: 5 ile başlayan 10 hane giriniz.','Doğrulama'); return; }
-            const kvkk=document.getElementById('kvkk').checked; if(!kvkk){ showErrorModal('KVKK aydınlatmasını onaylamanız gerekli.','KVKK Onayı'); return; }
-
-            const catEl=document.getElementById('category'); const categoryText=catEl.selectedOptions.length?catEl.selectedOptions[0].text:'';
-
-            const payload={
-              category:categoryText,
-              eventDate:document.getElementById('eventDate').value,
-              eventTime:document.getElementById('eventTime').value?document.getElementById('eventTime').value+':00':'00:00:00',
-              location:document.getElementById('location').value,
-              details:document.getElementById('details').value,
-              people:document.getElementById('people').value,
-              phone:getPhoneE164(),
-              otpCode:document.getElementById('otp').value,
-              kvkkConsent:kvkk
-            };
-
-            const res=await post('/form/submit',payload);
-            document.getElementById('successMsg').textContent=res.message||'Bildiriminiz iletilmiştir.';
-            new bootstrap.Modal(document.getElementById('successModal')).show();
-          }catch(e){ showErrorModal(e.message||'Beklenmeyen bir hata oluştu.'); }
-        };
-
-        // Başarı modalı kapanınca yenile
-        document.getElementById('closeSuccessBtn')?.addEventListener('click',()=>window.location.reload());
-        document.getElementById('successModal')?.addEventListener('hidden.bs.modal',()=>window.location.reload());
-        document.getElementById('newReportBtn')?.addEventListener('click',()=>{
-          bootstrap.Modal.getInstance(document.getElementById('successModal'))?.hide();
-        });
+    <script type="module">
+        import { initIndexPage } from '/js/page-index.js';
+        initIndexPage();
     </script>
 }
