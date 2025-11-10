@@ -36,7 +36,8 @@ public class OtpService
         var code = GenerateDigits(_opt.Digits);
         await _store.SaveAsync(phone, code, _opt.Ttl);
 
-        await _sms.SendAsync(phone, $"Doğrulama kodunuz: {code}");
+        await _sms.SendAsync(phone, $"Dogrulama kodunuz: {code}. Bu kodu yalnizca siz kullanin, baskalariyla paylasmayin.");
+
 
         await _limiter.MarkSentAsync(phone);
         return code;
