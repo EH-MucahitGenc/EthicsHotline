@@ -1,3 +1,4 @@
+using System.Globalization;
 using EthicsHotline.Services.Email;
 using EthicsHotline.Services.Otp;
 using EthicsHotline.Services.Sms;
@@ -229,6 +230,37 @@ app.MapPost("/form/submit", async (SubmitFormRequest req,
             await svc.VerifyAsync(req.Phone, req.OtpCode, consumeIfValid: true);
     }
 
+    // --- Tarih/Saat parse (mobilde boþ gelebilir) ---
+    DateTime? evDate = null;
+    TimeSpan? evTime = null;
+
+    if (!string.IsNullOrWhiteSpace(req.EventDate))
+    {
+        // input type="date" tipik formatý: yyyy-MM-dd
+        if (DateTime.TryParseExact(req.EventDate, "yyyy-MM-dd",
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out var d) ||
+            DateTime.TryParse(req.EventDate, CultureInfo.CurrentCulture,
+                DateTimeStyles.None, out d))
+        {
+            evDate = d;
+        }
+    }
+
+    if (!string.IsNullOrWhiteSpace(req.EventTime))
+    {
+        // JS'ten gelen: HH:mm:00 veya 00:00:00 vb.
+        if (TimeSpan.TryParse(req.EventTime, CultureInfo.InvariantCulture, out var t) ||
+            TimeSpan.TryParse(req.EventTime, CultureInfo.CurrentCulture, out t))
+        {
+            evTime = t;
+        }
+    }
+
+    var evDateText = evDate?.ToString("dd.MM.yyyy") ?? "-";
+    var evTimeText = evTime is { } ts && ts != TimeSpan.Zero
+        ? ts.ToString(@"hh\:mm")
+        : "";
+
     static string Html(string? s) => System.Net.WebUtility.HtmlEncode(s ?? "");
     var phoneRow = string.IsNullOrWhiteSpace(req.Phone) ? "" : $"<p><b>Telefon:</b> {Html(req.Phone)}</p>";
 
@@ -277,7 +309,7 @@ app.MapPost("/form/submit", async (SubmitFormRequest req,
             </tr>
             <tr>
               <td style=""padding:6px 0;width:160px;color:#64748b;font-size:13px;"">Tarih / Saat</td>
-              <td style=""padding:6px 0;font-size:14px;"">{req.EventDate:dd.MM.yyyy} {req.EventTime}</td>
+              <td style=""padding:6px 0;font-size:14px;"">{evDateText} {evTimeText}</td>
             </tr>
             <tr>
               <td style=""padding:6px 0;width:160px;color:#64748b;font-size:13px;"">Konum</td>
@@ -323,7 +355,6 @@ app.MapPost("/form/submit", async (SubmitFormRequest req,
     </div>
   </div>";
 
-
     var to = conf["Mail:To"] ?? conf["Mail:From"]!;
     await mailer.SendAsync(to, $"{company} | Etik Hat Bildirimi", body, isHtml: true);
 
@@ -342,10 +373,12 @@ app.Run();
 // Request records
 public record SendOtpRequest(string Phone);
 public record VerifyOtpRequest(string Phone, string Code);
+
+// EventDate / EventTime artýk string? olarak alýnýyor
 public record SubmitFormRequest(
     string Category,
-    DateTime EventDate,
-    TimeSpan EventTime,
+    string? EventDate,
+    string? EventTime,
     string? Location,
     string Details,
     string? People,
